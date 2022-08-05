@@ -10,17 +10,9 @@ const s3 = new S3Client({
   },
 });
 
-const isHeroku = process.env.NODE.ENV === "production";
-
-const s3ImageUploader = multerS3({
+const multerUploader = multerS3({
   s3: s3,
-  bucket: "tube-testing/images",
-  acl: "public-read",
-});
-
-const s3VideoUploader = multerS3({
-  s3: s3,
-  bucket: "tube-testing/vidoes",
+  bucket: "tube-testing",
   acl: "public-read",
 });
 
@@ -54,13 +46,12 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000,
   },
-  storage: isHeroku ? s3ImageUploader : undefined,
+  storage: multerUploader,
 });
-
 export const videoUpload = multer({
   dest: "uploads/videos/",
   limits: {
     fileSize: 10000000,
   },
-  storage: isHeroku ? s3VideoUploader : undefined,
+  storage: multerUploader,
 });
